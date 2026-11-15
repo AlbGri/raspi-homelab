@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; base-uri 'self'">
+    <title>Il mio homelab su Raspberry Pi</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main>
+    <header>
+        <h1>Il mio homelab su Raspberry Pi</h1>
+        <p class="sottotitolo">Un piccolo computer da 4 GB che a casa blocca la pubblicità, custodisce
+        le foto, sorveglia la casa e fa da media center.</p>
+    </header>
+
+    <section>
+        <h2>Cos'è un homelab</h2>
+        <p>Un computer sempre acceso, a casa, che fa da sé servizi che di solito si pagano o si
+        affidano a Google e simili. Il mio è un Raspberry Pi 4: grande come un mazzo di carte,
+        consuma quanto una lampadina LED e sta in un angolo vicino al router.</p>
+        <p>Queste pagine raccontano cosa ci gira, perché l'ho fatto così e cosa ho imparato dai
+        guasti. Servono a chi è curioso, a chi vuole farne uno e a chi ne ha già uno e vuole
+        migliorarlo.</p>
+    </section>
+
+    <section>
+        <h2>Cosa fa per me</h2>
+        <ul class="riquadri">
+            <li>
+                <h3>Niente pubblicità, in tutta casa</h3>
+                <p>Telefoni, PC, TV e app: le pubblicità e i tracciamenti vengono bloccati prima
+                di arrivare, senza installare niente sui dispositivi.</p>
+                <p class="programma">Pi-hole</p>
+            </li>
+            <li>
+                <h3>Le foto a casa, non su Google</h3>
+                <p>Il telefono carica le foto appena le scatto. Le cerco per data, luogo, persona,
+                o scrivendo "spiaggia".</p>
+                <p class="programma">Immich</p>
+            </li>
+            <li>
+                <h3>La casa che avvisa</h3>
+                <p>Sensori, automazioni e un pannello di controllo. E se qualcosa si rompe, anche
+                nel Pi stesso, mi arriva un messaggio sul telefono.</p>
+                <p class="programma">Home Assistant</p>
+            </li>
+            <li>
+                <h3>Film e serie, in casa</h3>
+                <p>Come un Netflix privato: la libreria sta sul Pi e si guarda dalla TV, dal
+                telefono o dal PC.</p>
+                <p class="programma">Jellyfin</p>
+            </li>
+            <li>
+                <h3>Tutto raggiungibile da fuori</h3>
+                <p>Fuori casa il telefono si collega come se fosse in casa, attraverso un canale
+                cifrato (una VPN). Senza aprire i servizi a tutta internet.</p>
+                <p class="programma">WireGuard</p>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Quanto costa</h2>
+        <ul class="cifre">
+            <li><strong>circa 320 €</strong> per comprarlo, prima dell'esplosione dei prezzi degli
+            SSD, e in parte usato: il Pi, un case con il disco da 2 TB dentro, e una piccola
+            batteria che lo tiene acceso se manca la corrente</li>
+            <li><strong>10-25 € l'anno</strong> di corrente</li>
+            <li><strong>una sessione al mese</strong> per gli aggiornamenti, più il tempo per
+            sistemare quello che si rompe</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>I compromessi</h2>
+        <ul>
+            <li><strong>Se il Pi si ferma, la casa resta senza internet</strong>: è lui a dire a
+            ogni dispositivo dove si trovano i siti. Bisogna sapere come rimediare.</li>
+            <li><strong>I backup sono responsabilità tua.</strong> Nessuna azienda conserva una
+            copia delle tue foto: se il disco si rompe e non ne hai una seconda, sono perse.</li>
+            <li><strong>Servono tempo e curiosità.</strong> Le cose si rompono in modi
+            silenziosi, e la parte più utile di queste pagine racconta proprio come
+            accorgersene.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Da dove cominciare</h2>
+        <dl class="percorsi">
+            <dt>Vuoi solo capire cosa uso</dt>
+            <dd><a href="pagina.html?doc=servizi">Servizi</a> e
+            <a href="pagina.html?doc=hardware">Hardware</a>.</dd>
+            <dt>Vuoi farne uno tuo</dt>
+            <dd>Comincia da Pi-hole da solo, su qualsiasi Raspberry Pi: è il più semplice e il
+            beneficio si vede il giorno stesso. Poi aggiungi un servizio alla volta. Il perché
+            delle mie scelte è in <a href="pagina.html?doc=decisioni">Decisioni</a>.</dd>
+            <dt>Hai già un homelab</dt>
+            <dd><a href="pagina.html?doc=controlla">Controlla il tuo homelab</a>: venti cose che
+            si rompono in silenzio, e come accorgersene. Molte le verifica in un colpo
+            <a href="pagina.html?doc=diagnostica">lo script di controllo</a>.</dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>Tutte le pagine</h2>
+        <ul class="indice">
+            <li><a href="pagina.html?doc=controlla">Controlla il tuo homelab</a>: le venti
+            verifiche, la parte di maggior valore</li>
+            <li><a href="pagina.html?doc=servizi">Servizi</a>: cosa gira sul Pi e quanta memoria
+            usa</li>
+            <li><a href="pagina.html?doc=hardware">Hardware</a>: i pezzi, quanto costano, quanto
+            consumano</li>
+            <li><a href="pagina.html?doc=decisioni">Decisioni</a>: le scelte, con le alternative
+            scartate e il motivo</li>
+            <li><a href="pagina.html?doc=dns">DNS</a>: come funziona il blocco della pubblicità,
+            con Pi-hole e Unbound</li>
+            <li><a href="pagina.html?doc=home-assistant">Home Assistant</a>: come sorveglia il Pi
+            e manda gli avvisi</li>
+            <li><a href="pagina.html?doc=immich">Immich</a>: le foto, il backup e il ripristino
+            provato, il passaggio da Google Foto</li>
+            <li><a href="pagina.html?doc=gestione">Gestione</a>: la sessione mensile di
+            aggiornamento</li>
+            <li><a href="pagina.html?doc=diagnostica">Lo script di controllo</a>: le verifiche
+            automatiche</li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p>Aggiornato a novembre 2026. Il codice è sotto licenza AGPL-3.0, i testi sotto
+    CC BY-SA 4.0: <a href="https://github.com/AlbGri/raspi-homelab">sorgenti su GitHub</a>.</p>
+</footer>
+</body>
+</html>

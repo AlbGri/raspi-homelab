@@ -1,0 +1,3 @@
+# Gli script e le configurazioni girano sul Pi: con i fine riga di Windows non partono
+*.sh   text eol=lf
+*.conf text eol=lf
