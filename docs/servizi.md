@@ -7,12 +7,11 @@ programma e tutto ciò che gli serve, separato dagli altri e dal sistema. Si div
 gruppi: quelli sempre accesi e quelli che accendo solo quando servono.
 
 Il limite vero è la memoria. Il Pi ha 3,7 GB di RAM, e i servizi sempre accesi ne usano circa
-1,3. Nell'ultimo controllo il sistema stava usando anche 1,1 GB di swap, la memoria d'appoggio
-sul disco: più lenta, ma evita che qualcosa si fermi per mancanza di spazio. Per questo il resto
+1,3. Con i soli servizi sempre accesi il sistema usa già un po' di swap (1,1 GB a ottobre 2026),
+la memoria d'appoggio sul disco: più lenta, ma evita che qualcosa si fermi per mancanza di spazio. Per questo il resto
 si accende su richiesta (vedi [Decisioni](decisioni.md)).
 
-I valori di memoria qui sotto vengono da un controllo di ottobre 2026: cambiano di giorno in
-giorno, servono a dare l'ordine di grandezza.
+I valori di memoria qui sotto sono di ottobre 2026: cambiano di giorno in giorno, servono a dare l'ordine di grandezza.
 
 ## Sempre accesi
 
@@ -48,5 +47,4 @@ sua](immich.md).
 | Gruppo film e serie | I programmi che tengono in ordine la libreria che Jellyfin mostra. Partono e si fermano insieme, con un solo tasto |
 | Dozzle | Mostra in una pagina web i registri di tutti i container, utile quando qualcosa non va |
 
-Li accendo e spengo dalla dashboard di Home Assistant. Nell'ultimo controllo erano tutti spenti,
-quindi non ho valori di memoria da indicare.
+Li accendo dalla dashboard di Home Assistant quando servono, e poi li spengo.

@@ -6,7 +6,7 @@ Un Raspberry Pi 4B da 4 GB, dentro un case che contiene anche un SSD da 2 TB, al
 piccolo gruppo di continuità. Comprati in tre momenti diversi, per una spesa totale di circa
 320 €.
 
-Il consumo è fra 5 e 10 W, una stima che non ho ancora misurato con precisione. Acceso tutto
+Il consumo è fra 5 e 10 W, stimati, non misurati. Acceso tutto
 l'anno fa circa 45-90 kWh, cioè 10-25 € di corrente a 0,25-0,30 € al kWh.
 
 ## I pezzi

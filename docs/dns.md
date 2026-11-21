@@ -18,6 +18,43 @@ programmi sul Pi:
 
 Il prezzo: se il Pi si ferma, tutta la casa resta senza internet.
 
+## Cosa non blocca, e cosa costa
+
+Pi-hole toglie molta pubblicità, non tutta, e chiede un po' di manutenzione.
+
+- **La pubblicità che arriva dallo stesso indirizzo del contenuto passa.** Pi-hole vede solo il
+  nome a cui il dispositivo si collega: se video e spot arrivano dallo stesso nome, come su
+  YouTube, bloccare gli spot vorrebbe dire bloccare i video
+- **Chi usa un DNS suo lo scavalca.** Alcuni dispositivi e app hanno un DNS scritto dentro, e un
+  browser con il "DNS sicuro" impostato su un servizio esterno (Cloudflare, Google) non passa da
+  Pi-hole
+- **Le liste decidono tutto.** Pi-hole blocca solo i nomi che trova nelle liste che gli si danno.
+  Più liste, e più aggressive, vuol dire più blocchi, ma anche più siti che smettono di
+  funzionare: un link in una newsletter, il tracciamento di un pacco, il pagamento in un negozio
+  online
+- **Ogni falso positivo è un'eccezione a mano.** Si cerca nel registro delle richieste (Query Log)
+  il nome bloccato e lo si aggiunge fra quelli ammessi, in Group Management → Domains. In
+  famiglia, l'assistenza sei tu
+
+### Le liste che uso
+
+| Lista | Cosa blocca |
+|---|---|
+| [StevenBlack](https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts) | Pubblicità e malware: la lista di base, prudente |
+| [OISD big](https://big.oisd.nl/) | Pubblicità, tracciamento e malware, curata per rompere poco |
+| [AdGuard DNS](https://v.firebog.net/hosts/AdguardDNS.txt) | Pubblicità e tracciamento |
+| [Ads and tracking](https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt) | Pubblicità e tracciamento |
+| [Tracking aggressive](https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt) | Tracciamento, in modo più deciso: può rompere qualche sito |
+| [AMP](https://www.github.developerdan.com/hosts/lists/amp-hosts-extended.txt) | Le pagine AMP di Google: i risultati di ricerca aperti in quella versione non si caricano |
+| [Facebook](https://www.github.developerdan.com/hosts/lists/facebook-extended.txt) | Facebook e i suoi servizi |
+| [TikTok](https://raw.githubusercontent.com/superover/TikTok-Blocklist/master/tiktok.txt) | TikTok |
+| [Hate and junk](https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt) | Siti d'odio e spazzatura |
+| [Dating](https://www.github.developerdan.com/hosts/lists/dating-services-extended.txt) | Siti e app di incontri |
+
+Le ultime quattro non riguardano la pubblicità: tolgono servizi interi. È una scelta di casa, non
+tecnica, e Pi-hole permette di applicarle solo ad alcuni dispositivi, con i gruppi (Group
+Management → Groups).
+
 ## Il percorso di una richiesta
 
 ```
