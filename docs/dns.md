@@ -9,8 +9,9 @@ Ogni volta che un dispositivo apre un sito o un'app si collega a un servizio, pr
 "a che indirizzo si trova questo nome?". Il DNS è chi risponde. Nel mio homelab rispondono due
 programmi sul Pi:
 
-- **Pi-hole** fa da centralino: se il nome appartiene a un servizio di pubblicità o di
-  tracciamento, risponde "non esiste" e la chiamata non parte. Funziona per tutti i dispositivi
+- **Pi-hole** fa da centralino: se il nome appartiene a un servizio di pubblicità, di
+  tracciamento o di telemetria (i dati che TV, domotica e visori mandano di continuo ai
+  produttori), risponde "non esiste" e la chiamata non parte. Funziona per tutti i dispositivi
   di casa, compresi TV e app, senza installare niente su di loro
 - **Unbound** va a cercare le risposte alla fonte: invece di chiederle a un servizio esterno
   (quello del provider, o Google, o Cloudflare), interroga direttamente i server che gestiscono
@@ -20,7 +21,7 @@ Il prezzo: se il Pi si ferma, tutta la casa resta senza internet.
 
 ## Cosa non blocca, e cosa costa
 
-Pi-hole toglie molta pubblicità, non tutta, e chiede un po' di manutenzione.
+Pi-hole toglie molta pubblicità e telemetria, non tutta, e chiede un po' di manutenzione.
 
 - **La pubblicità che arriva dallo stesso indirizzo del contenuto passa.** Pi-hole vede solo il
   nome a cui il dispositivo si collega: se video e spot arrivano dallo stesso nome, come su
