@@ -15,7 +15,8 @@ Il sito: https://raspi-homelab.albgri.com
   niente; si lancia sul Pi con `sudo bash controlla-homelab.sh`
 - `compose/unbound/unbound.conf`: la configurazione di Unbound descritta in
   [docs/dns.md](docs/dns.md)
-- `index.html`, `pagina.html`, `assets/`: il sito, senza passaggi di compilazione
+- `index.html`, `pagina.html`, `assets/`, `vendor/`: il sito, senza passaggi di compilazione e
+  senza risorse da altri siti
 
 Anteprima locale: `python -m http.server 8000` nella cartella del repository, poi
 http://127.0.0.1:8000/.
@@ -26,3 +27,5 @@ http://127.0.0.1:8000/.
   [AGPL-3.0](LICENSE)
 - I testi (`README.md` e `docs/`) sono sotto [CC BY-SA 4.0](LICENSE-docs): puoi riusarli e
   modificarli citando la fonte e mantenendo la stessa licenza
+- Hanno la loro licenza, nel file accanto: `vendor/marked-15.0.12/` (marked, MIT) e
+  `assets/caratteri/` (Alegreya e Atkinson Hyperlegible Next, SIL Open Font License)

@@ -1,131 +1,24 @@
-:root {
-    --sfondo: #fbfaf7;
-    --testo: #1f2328;
-    --tenue: #5b6370;
-    --bordo: #dcd8cf;
-    --riquadro: #ffffff;
-    --accento: #1f6f5c;
-    --codice: #f1efe9;
-    color-scheme: light;
-}
+/* Solo cio' che e' di questo sito. Il resto e' in stile-comune.css, copia da non ritoccare */
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --sfondo: #16181b;
-        --testo: #e6e3dc;
-        --tenue: #9aa1ab;
-        --bordo: #2e3238;
-        --riquadro: #1d2024;
-        --accento: #6cc4a8;
-        --codice: #23272c;
-        color-scheme: dark;
-    }
-}
+/* ---- Documenti di docs/, impaginati da marked ---- */
+#documento h2 { font: 700 1.35rem/1.2 var(--serif); margin: 22px 0 6px; }
+#documento h3 { font: 700 1.1rem/1.25 var(--serif); margin: 16px 0 4px; }
+/* il salto a una voce non deve finire sotto la barra fissa */
+#documento [id] { scroll-margin-top: 60px; }
+@media (max-width: 760px) { #documento [id] { scroll-margin-top: 100px; } }
+/* la voce raggiunta da un link: lo stesso tratto giallo del titolo di un riquadro */
+#documento :target { text-decoration: underline 3px var(--accent); text-underline-offset: 3px; }
+#documento ul, #documento ol { margin: 0 0 8px; padding-left: 22px; }
+#documento li { margin-bottom: 2px; }
+#documento li > p { margin-bottom: 4px; }
 
-* { box-sizing: border-box; }
+pre { margin: 0 0 10px; padding: 8px 10px; overflow-x: auto; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 6px; font: 14px/1.4 var(--mono); }
+code { font-family: var(--mono); font-size: .9em; }
+pre code { font-size: inherit; }
+:not(pre) > code { padding: .1em .3em; background: var(--surface); border-radius: 4px; overflow-wrap: anywhere; }
 
-body {
-    margin: 0;
-    background: var(--sfondo);
-    color: var(--testo);
-    font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
-
-/* La lunghezza del rigo la decide la colonna: il testo dentro va a capo solo al suo bordo */
-main, footer {
-    max-width: 46rem;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-main { padding-block: 2rem 1rem; }
-
-h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 0.5rem; }
-h2 { font-size: 1.35rem; margin: 2.5rem 0 0.75rem; }
-h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
-
-.sottotitolo { color: var(--tenue); font-size: 1.15rem; margin-top: 0; }
-
-a { color: var(--accento); text-underline-offset: 0.15em; }
-
-/* --- Pagina iniziale --- */
-
-.riquadri {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 0.75rem;
-}
-@media (min-width: 40rem) {
-    .riquadri { grid-template-columns: 1fr 1fr; }
-}
-.riquadri li {
-    background: var(--riquadro);
-    border: 1px solid var(--bordo);
-    border-radius: 0.6rem;
-    padding: 0.9rem 1rem;
-}
-.riquadri h3 { margin: 0 0 0.35rem; }
-.riquadri p { margin: 0 0 0.5rem; }
-.riquadri .programma {
-    margin: 0;
-    color: var(--tenue);
-    font-size: 0.9rem;
-}
-
-.cifre li, .indice li { margin-bottom: 0.4rem; }
-
-.percorsi dt { font-weight: 600; margin-top: 1rem; }
-.percorsi dd { margin: 0.25rem 0 0; }
-
-/* --- Pagine dei documenti --- */
-
-.torna { display: inline-block; margin-bottom: 1rem; }
-
-pre, table {
-    display: block;
-    overflow-x: auto;
-}
-pre {
-    background: var(--codice);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    line-height: 1.45;
-}
-code {
-    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
-    font-size: 0.9em;
-}
-:not(pre) > code {
-    background: var(--codice);
-    padding: 0.1em 0.3em;
-    border-radius: 0.25rem;
-    overflow-wrap: anywhere;
-}
-
-table { border-collapse: collapse; margin: 1rem 0; }
-th, td {
-    border: 1px solid var(--bordo);
-    padding: 0.4rem 0.6rem;
-    text-align: left;
-    vertical-align: top;
-}
-th { background: var(--codice); }
-
-h3[id^="voce-"] { scroll-margin-top: 1rem; }
-:target { outline: 2px solid var(--accento); outline-offset: 0.3rem; border-radius: 0.2rem; }
-
-.errore {
-    border: 1px solid var(--bordo);
-    border-left: 4px solid #c0392b;
-    padding: 0.75rem 1rem;
-    background: var(--riquadro);
-}
-
-footer {
-    border-top: 1px solid var(--bordo);
-    padding-block: 1rem 2rem;
-    color: var(--tenue);
-    font-size: 0.9rem;
-}
+/* tabelle di testo: solo filetti orizzontali, come nello stile comune; larghe, scorrono di lato */
+#documento table { display: block; max-width: 100%; overflow-x: auto; margin: 0 0 10px; border-collapse: collapse; }
+#documento th, #documento td { padding: 4px 14px 4px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+#documento th { border-bottom-color: var(--muted); }

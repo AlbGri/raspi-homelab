@@ -1,16 +1,9 @@
-// Mostra un file di docs/ scelto con ?doc=nome. Solo i nomi dell'elenco: un parametro libero
-// permetterebbe di far caricare alla pagina un file qualsiasi.
-const DOCUMENTI = ['controlla', 'servizi', 'hardware', 'decisioni', 'dns', 'home-assistant',
-    'immich', 'gestione', 'diagnostica'];
-
+// Mostra il file di docs/ scelto con ?doc=nome. DOC e GRUPPO vengono da sito.js
 const articolo = document.getElementById('documento');
 
 function mostraErrore(testo) {
-    articolo.innerHTML = '';
-    const p = document.createElement('p');
-    p.className = 'errore';
-    p.textContent = testo;
-    articolo.append(p);
+    articolo.innerHTML = '<p class="avviso errore"><b>Errore:</b> </p>';
+    articolo.firstChild.append(testo);
 }
 
 function idDaTitolo(testo) {
@@ -25,6 +18,7 @@ function idDaTitolo(testo) {
 // leggendo il repository su GitHub; sul sito diventano pagine e percorsi dalla radice
 function sistemaCollegamenti() {
     for (const a of articolo.querySelectorAll('a[href]')) {
+        a.classList.add('rimando');
         const href = a.getAttribute('href');
         if (/^[a-z]+:/i.test(href) || href.startsWith('#')) continue;
         const md = href.match(/^([\w-]+)\.md(#.*)?$/);
@@ -41,32 +35,34 @@ function sistemaCollegamenti() {
 }
 
 async function carica() {
-    const nome = new URLSearchParams(location.search).get('doc');
-    if (!DOCUMENTI.includes(nome)) {
-        mostraErrore('Pagina non trovata. Torna all\'elenco e scegline una.');
+    if (!GRUPPO) {
+        mostraErrore('pagina non trovata. Scegline una dalla mappa del sito.');
         return;
     }
     let testo;
     try {
-        const risposta = await fetch('docs/' + nome + '.md');
+        const risposta = await fetch('docs/' + DOC + '.md');
         if (!risposta.ok) throw new Error(risposta.status);
         testo = await risposta.text();
     } catch (errore) {
-        mostraErrore('Non riesco a caricare la pagina (' + errore.message + '). Riprova fra poco.');
+        mostraErrore('non riesco a caricare la pagina (' + errore.message + '). Riprova fra poco.');
         return;
     }
     if (typeof marked === 'undefined') {
-        mostraErrore('Non riesco a caricare il programma che impagina il testo. Riprova fra poco.');
+        mostraErrore('non riesco a caricare il programma che impagina il testo. Riprova fra poco.');
         return;
     }
 
     articolo.innerHTML = marked.parse(testo);
     for (const h of articolo.querySelectorAll('h1, h2, h3')) h.id = idDaTitolo(h.textContent);
     sistemaCollegamenti();
+    aggiungiSezioni(articolo.querySelectorAll('h2'));
 
     const titolo = articolo.querySelector('h1');
     if (titolo) document.title = titolo.textContent + ' - Il mio homelab';
-    if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+    // i titoli hanno l'id solo ora: ripetere il salto all'ancora la fa trovare e accende :target
+    if (location.hash) location.replace(location.hash);
 }
 
-carica();
+// dopo sito.js, che sullo stesso evento costruisce la mappa
+document.addEventListener('DOMContentLoaded', carica);
