@@ -10,7 +10,6 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="assets/caratteri/caratteri.css">
     <link rel="stylesheet" href="assets/stile-comune.css">
-    <link rel="stylesheet" href="assets/style.css">
     <script src="assets/sito.js"></script>
     <!-- marked a versione fissa, servito dal sito: per aggiornarlo si sostituisce la cartella -->
     <script src="vendor/marked-15.0.12/marked.min.js" defer></script>
@@ -20,12 +19,12 @@
 <header class="barra">
     <a class="marchio" href="./">Il mio homelab</a>
     <span class="briciole"></span>
-    <span class="controlli"><button type="button" class="btn tema" id="tema"><i></i><span class="et">Scuro</span></button></span>
+    <span class="controlli"><button type="button" class="btn tema" id="tema" aria-label="Passa al tema scuro"><i></i><span class="et">Scuro</span></button></span>
 </header>
 <div class="pagina">
     <nav id="mappa" aria-label="Mappa del sito"></nav>
     <main>
-        <article id="documento">
+        <article id="documento" class="documento">
             <noscript><p class="avviso"><b>Questa pagina ha bisogno di JavaScript.</b> I testi si
             leggono anche su <a href="https://github.com/AlbGri/raspi-homelab/tree/main/docs">GitHub</a>.</p></noscript>
             <p>Caricamento…</p>
