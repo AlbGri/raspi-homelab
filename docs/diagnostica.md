@@ -10,8 +10,8 @@ Non modifica niente e non copia file. L'output non contiene percorsi né configu
 si può incollare dove serve, per esempio in una chat per chiedere aiuto.
 
 Ogni controllo è nato da un guasto rimasto invisibile per giorni o settimane, perché nessuno
-andava a guardare. Un controllo che dipende da qualcuno che si ricordi di farlo non è un
-controllo: io lo lancio all'inizio della [sessione mensile](gestione.md).
+andava a guardare. Per non affidarmi alla memoria, lo lancio come primo passo della
+[sessione mensile](gestione.md).
 
 ## Come si lancia
 
@@ -30,7 +30,7 @@ file di Home Assistant. Home Assistant e Immich li trova da solo, dal nome dell'
 
 | Controllo | Voce |
 |---|---|
-| Disco, RAM, temperatura, rallentamenti per calore o alimentazione, servizi di sistema falliti | — |
+| Disco, RAM, temperatura, rallentamenti per calore o alimentazione, servizi di sistema falliti | |
 | NTP punta a indirizzi IP | [1](controlla.md) |
 | Nessun container su un'immagine senza tag | [6](controlla.md) |
 | Log di Docker limitati, e ogni container creato con il limite | [7](controlla.md) |
@@ -59,4 +59,4 @@ OK          voce 20  Database di Immich: l'ultimo backup ha 0 giorni
 Risultato: 3 OK, 2 da guardare, 1 saltati.
 ```
 
-`SALTATO` non è un problema: vuol dire che quella cosa da te non c'è, o che serve `sudo`.
+`SALTATO` vuol dire che quella cosa da te non c'è, o che serve `sudo`.

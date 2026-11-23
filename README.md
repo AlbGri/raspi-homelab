@@ -9,8 +9,7 @@ Il sito: https://raspi-homelab.albgri.com
 ## Cosa c'è
 
 - `docs/`: le pagine, in Markdown. Si leggono anche qui su GitHub. Da cui partire:
-  [Controlla il tuo homelab](docs/controlla.md), venti cose che si rompono in silenzio e come
-  accorgersene
+  [Controlla il tuo homelab](docs/controlla.md), venti controlli, ognuno nato da un guasto vero
 - `scripts/controlla-homelab.sh`: verifica in un colpo molte di quelle venti voci. Non modifica
   niente; si lancia sul Pi con `sudo bash controlla-homelab.sh`
 - `compose/unbound/unbound.conf`: la configurazione di Unbound descritta in

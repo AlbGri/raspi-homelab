@@ -3,11 +3,10 @@
 Venti controlli da fare su un Raspberry Pi con Docker e Home Assistant. Ognuno nasce da un
 problema che ho avuto io, e nessuno richiede di comprare qualcosa.
 
-Il filo comune: i guasti che mi sono costati di più non hanno dato nessun errore. Notifiche
-mute per due giorni, il Bluetooth fermo per tre, un blocco del Pi che nessuno ha notato. Per
-questo ogni voce dice anche come accorgersene, e la regola che ne ho ricavato è una sola: un
-guasto è risolto davvero quando esiste un controllo automatico che se ne accorge la volta
-successiva.
+I guasti che mi sono costati di più non hanno dato nessun errore: notifiche mute per due
+giorni, il Bluetooth fermo per tre, un blocco del Pi che nessuno ha notato. Per questo ogni voce
+dice anche come accorgersene. Per me un guasto è risolto solo quando c'è un controllo automatico
+che lo noterebbe la volta successiva.
 
 Ogni voce ha tre parti:
 
@@ -20,7 +19,7 @@ valori da sostituire con i tuoi.
 
 ## Ora e DNS
 
-### 1. NTP punta a indirizzi IP, non a nomi
+### 1. NTP punta a indirizzi IP
 
 **Controlla.** Quali server usa il Pi per l'ora:
 
@@ -31,14 +30,13 @@ grep -rhE '^(NTP|FallbackNTP)=' /etc/systemd/timesyncd.conf /etc/systemd/timesyn
 Se non esce niente valgono i server predefiniti, che sono nomi (`*.pool.ntp.org`). La voce ti
 riguarda se sul Pi gira un resolver che verifica DNSSEC, come Unbound.
 
-**Perché.** Il Pi non ha un orologio con la batteria: al boot riparte dall'ultima ora salvata.
-Se è rimasto spento qualche giorno, quell'ora è vecchia. Unbound controlla la data delle firme
-DNSSEC della zona radice e, con un orologio fuori dal loro periodo di validità, le rifiuta:
-ogni risposta diventa `SERVFAIL`. NTP dovrebbe correggere l'ora, ma per raggiungere un server
-indicato per nome deve risolverlo, e il DNS è fermo proprio per l'ora sbagliata. Si bloccano a
-vicenda.
+**Perché.** Il Pi non ha un orologio con la batteria, e al boot riparte dall'ultima ora
+salvata. Se è rimasto spento qualche giorno, quell'ora è vecchia. Unbound controlla la data
+delle firme DNSSEC della zona radice e, con un orologio fuori dal loro periodo di validità, le
+rifiuta, e ogni risposta diventa `SERVFAIL`. NTP dovrebbe correggere l'ora, ma per raggiungere
+un server indicato per nome deve risolverlo, e il DNS è fermo proprio per l'ora sbagliata.
 
-A me è successo a settembre 2026, dopo alcuni giorni di Pi spento: nessun dispositivo di casa
+A me è successo a settembre 2026, dopo alcuni giorni di Pi spento. Nessun dispositivo di casa
 risolveva più i nomi, e con un DNS esterno impostato a mano sul PC la rete tornava.
 
 **Correggi.** Un file `/etc/systemd/timesyncd.conf.d/10-ntp-ip.conf`:
@@ -54,8 +52,8 @@ I due di riserva sono `time.cloudflare.com` e `time.google.com`. Poi
 
 Due note:
 
-- `fake-hwclock` salva l'ora a intervalli regolari: aiuta dopo un distacco improvviso della
-  corrente, non dopo uno spegnimento lungo. Da solo non basta.
+- `fake-hwclock` salva l'ora a intervalli regolari. Aiuta dopo un distacco improvviso della
+  corrente, ma dopo uno spegnimento lungo l'ora salvata è comunque vecchia.
 - Subito dopo il boot `timedatectl` può dire `System clock synchronized: no` per qualche
   minuto anche quando tutto è a posto. Sul mio Pi la prima sincronizzazione arriva dopo circa
   quattro minuti e mezzo, perché Docker cambia più volte la configurazione di rete mentre crea
@@ -74,12 +72,12 @@ domestica, il secondo nei dati di accesso a internet.
 **Perché.** Se i dispositivi ricevono il Pi come DNS, un guasto del Pi lascia senza internet
 tutta la casa, anche con il router che funziona. L'opzione "usa DNS pubblici se il DNS non
 risponde" che alcuni router offrono riguarda di solito solo le richieste del router stesso: ai
-dispositivi non arriva. Lo si scopre il giorno in cui servirebbe.
+dispositivi non arriva.
 
-**Correggi.** Non c'è una correzione unica: c'è una scelta da fare sapendo cosa comporta.
+**Correggi.** Qui c'è una scelta da fare, sapendo cosa comporta.
 Annunciare un secondo DNS pubblico tiene in piedi la rete, ma i dispositivi lo useranno anche
 quando il Pi funziona, e una parte della pubblicità passerà. Io ho tenuto solo il Pi, e mi sono
-segnato la via d'uscita: un DNS impostato a mano sul dispositivo da cui lavoro.
+segnato la via d'uscita, cioè un DNS impostato a mano sul dispositivo da cui lavoro.
 
 Per verificare che il filtro sia davvero attivo non basta guardare il router. Chiedi al Pi un
 dominio pubblicitario e controlla che risponda `0.0.0.0`:
@@ -113,9 +111,9 @@ healthcheck:
 ```
 
 Viene la tentazione di aggiungere a Pi-hole un `depends_on` con
-`condition: service_healthy` verso Unbound. Io non l'ho fatto: legherebbe l'avvio di Pi-hole
-alla salute di Unbound, e un DNS che risponde male diventerebbe un DNS che non parte per niente.
-Meglio due guasti indipendenti.
+`condition: service_healthy` verso Unbound. Io non l'ho fatto, perché legherebbe l'avvio di
+Pi-hole alla salute di Unbound, e un DNS che risponde male diventerebbe un DNS che non parte per
+niente. Preferisco che i due guasti restino separati.
 
 ### 4. I container in rete host condividono il limite di Pi-hole
 
@@ -126,11 +124,11 @@ docker ps --format '{{.Names}}\t{{.Networks}}' | grep -w host
 ```
 
 **Perché.** Verso Pi-hole tutti questi container si presentano con lo stesso indirizzo, quello
-del Pi. Pi-hole limita le richieste per indirizzo (di base 1000 al minuto): se un solo
+del Pi. Pi-hole limita le richieste per indirizzo (di base 1000 al minuto), e se un solo
 container entra in un ciclo di richieste, il limite scatta per tutti, e ogni altro servizio
 resta senza DNS.
 
-**Correggi.** Soprattutto saperlo. Se un servizio perde il DNS senza motivo apparente, cerca
+**Correggi.** Qui basta saperlo. Se un servizio perde il DNS senza motivo apparente, cerca
 nei messaggi di Pi-hole un avviso di rate limiting sull'indirizzo del Pi, e fra i client più
 attivi il Pi stesso.
 
@@ -150,12 +148,12 @@ Se i due valori sono diversi, sul disco c'è una versione più recente in attesa
 
 **Perché.** `docker compose up -d --force-recreate <servizio>` ricrea il container
 dall'immagine che trova sul disco. Con un tag mobile (`:latest`, `:stable`) quell'immagine può
-essere più nuova di quella in esecuzione: basta un `docker compose pull` fatto settimane prima,
+essere più nuova di quella in esecuzione. Basta un `docker compose pull` fatto settimane prima,
 o uno strumento che scarica gli aggiornamenti senza applicarli.
 
 A me è successo a settembre 2026. Ho ricreato Home Assistant solo per aggiungere una cartella,
 ed è passato dalla 2026.4 alla 2026.9, cinque mesi di versioni in un colpo. Nel salto si è
-rotto il legame fra il dispositivo Telegram e le sue entità di notifica (vedi la voce 14): per
+rotto il legame fra il dispositivo Telegram e le sue entità di notifica (vedi la voce 14), e per
 due giorni non è arrivata nessuna notifica, senza un errore.
 
 **Correggi.**
@@ -164,8 +162,8 @@ due giorni non è arrivata nessuna notifica, senza un errore.
   decidi l'aggiornamento apposta invece di subirlo
 - Non tenere immagini nuove sul disco in attesa. Io sono passato da Watchtower a
   [Diun](https://crazymax.dev/diun/), che interroga i registry e avvisa senza scaricare niente
-- Dopo ogni ricreazione controlla che il servizio faccia ancora il suo lavoro, non solo che
-  risulti `healthy`
+- Dopo ogni ricreazione controlla che il servizio faccia ancora il suo lavoro, perché
+  `healthy` da solo non lo garantisce
 
 ### 6. Nessun container su un'immagine senza tag
 
@@ -179,8 +177,8 @@ Nella seconda colonna ci deve essere `nome:tag`. Un codice esadecimale vuol dire
 container gira su un'immagine che ha perso il suo tag.
 
 **Perché.** Succede quando il tag passa a una versione più nuova mentre il container continua a
-girare su quella vecchia. Chi controlla gli aggiornamenti, come Diun, non vede quel container:
-non c'è più un riferimento al registry da interrogare.
+girare su quella vecchia. Chi controlla gli aggiornamenti, come Diun, non vede quel container,
+perché non c'è più un riferimento al registry da interrogare.
 
 **Correggi.** Ricreare il container sulla versione che vuoi. Rimettere il tag a mano
 all'immagine vecchia non risolve.
@@ -199,14 +197,14 @@ Un container con `map[]` non ha limiti sui log.
 **Perché.** Di base Docker conserva i log dei container senza limite di dimensione, e su un Pi
 lo spazio finisce. La policy in `daemon.json` ha due tranelli:
 
-- vale solo per i container **creati dopo**: quelli esistenti tengono la configurazione con
+- vale solo per i container **creati dopo**. Quelli esistenti tengono la configurazione con
   cui sono nati, anche dopo il riavvio di Docker. Passano sotto la policy solo quando vengono
   ricreati
 - un `daemon.json` scritto male impedisce a Docker di partire. Se sul Pi gira Pi-hole, la casa
   resta senza DNS
 
 **Correggi.** La policy sta in un posto solo, `/etc/docker/daemon.json`, e non si ripete nei
-compose: così i servizi futuri la ereditano senza doverlo ricordare.
+compose, così i servizi futuri la ereditano senza doverlo ricordare.
 
 ```json
 {
@@ -228,12 +226,12 @@ Poi si ricreano i container un po' alla volta, tenendo a mente la voce 5.
 **Controlla.** Nei `volumes:` dei compose, le righe che montano un file e non una cartella. Per
 ognuna: il programma nel container scrive su quel file?
 
-**Perché.** Molti programmi aggiornano un file in modo sicuro: scrivono una copia temporanea e
-poi la rinominano al posto dell'originale. Su un file montato da solo la rinomina fallisce.
+**Perché.** Molti programmi aggiornano un file scrivendo una copia temporanea e rinominandola
+al posto dell'originale. Su un file montato da solo la rinomina fallisce.
 Nel mio caso era Unbound, che non riusciva ad aggiornare il file delle chiavi DNSSEC
 (`root.key`); quel file viveva solo dentro il container e si perdeva a ogni ricreazione.
 
-C'è anche il tranello opposto: se sull'host sostituisci un file montato singolarmente con
+Il tranello vale anche al contrario. Se sull'host sostituisci un file montato singolarmente con
 qualcosa che ne crea uno nuovo (`mv`, alcuni editor), il container continua a vedere la
 versione vecchia. `cp` e `scp` riscrivono il file al suo posto e vanno bene.
 
@@ -250,8 +248,8 @@ Il caso tipico è l'interfaccia della VPN creata da `wg-easy`.
 ip -br addr
 ```
 
-**Perché.** Al boot è una gara: se Docker prova a pubblicare la porta prima che l'altro
-container abbia creato l'interfaccia, il container non parte. Non c'è un modo affidabile di
+**Perché.** Al boot Docker può provare a pubblicare la porta prima che l'altro container
+abbia creato l'interfaccia, e in quel caso il container non parte. Non c'è un modo affidabile di
 ordinarli, né con `depends_on` né con systemd.
 
 **Correggi.** Pubblica la porta sull'IP del Pi nella rete di casa. Se i client della VPN
@@ -273,8 +271,8 @@ docker inspect --format '{{.Config.StopTimeout}}' homeassistant
 
 **Perché.** Alla chiusura Docker manda un segnale di arresto e, dopo 10 secondi, uccide il
 processo. Se un'integrazione rallenta l'arresto (da me era `monitor_docker`), Home Assistant
-viene ucciso con il database ancora aperto. Una volta non fa danni; abbastanza volte, prima o
-poi il database si corrompe, e lì dentro c'è tutta la cronologia.
+viene ucciso con il database ancora aperto. Una volta non fa danni, ma ripetuto prima o poi
+corrompe il database, che contiene tutta la cronologia.
 
 **Correggi.** Nel compose, sul servizio di Home Assistant:
 
@@ -282,8 +280,8 @@ poi il database si corrompe, e lì dentro c'è tutta la cronologia.
 stop_grace_period: 60s
 ```
 
-Poi un riavvio di prova: il messaggio non deve ricomparire. È una mitigazione, non una cura:
-se l'integrazione si bloccasse del tutto, nessun tempo basterebbe.
+Poi un riavvio di prova, dopo il quale il messaggio non deve ricomparire. Se l'integrazione si
+bloccasse del tutto nessun tempo basterebbe, quindi questo riduce il rischio senza toglierlo.
 
 ### 11. I servizi senza password non stanno in rete host
 
@@ -295,7 +293,7 @@ sudo ss -tlnp
 ```
 
 **Perché.** In rete host ogni porta aperta dal container è aperta su tutte le interfacce del
-Pi: rete di casa e client della VPN compresi. Diun, per esempio, apre un servizio senza
+Pi, compresi la rete di casa e i client della VPN. Diun, per esempio, apre un servizio senza
 autenticazione per i propri comandi.
 
 **Correggi.** Per i servizi che non devono essere raggiunti da fuori, una rete bridge e
@@ -314,13 +312,13 @@ sudo ufw status numbered
 
 **Perché.** Il container si presenta con un indirizzo `172.x`, non con quello della rete di
 casa. Se UFW ha la politica di base che rifiuta le connessioni in entrata, il pacchetto viene
-**scartato senza risposta**: il container va in timeout e nel log del servizio chiamato non
-compare **niente**. Quel silenzio è l'indizio: se la richiesta fosse arrivata e fosse stata
-rifiutata, una traccia ci sarebbe.
+scartato senza risposta. Il container va in timeout e nel log del servizio chiamato non compare
+niente, ed è proprio questo l'indizio, perché una richiesta arrivata e rifiutata lascerebbe una
+traccia.
 
-**Correggi.** La regola va scritta su tutto l'intervallo che Docker usa per le sue reti, non
-sulla sottorete di oggi: Docker la sceglie da sé, e cambia se la rete viene ricreata. Una regola
-troppo stretta smetterebbe di valere senza avvisare.
+**Correggi.** La regola va scritta su tutto l'intervallo che Docker usa per le sue reti. La
+sottorete di un container Docker la sceglie da sé e cambia se la rete viene ricreata, e una
+regola scritta solo per quella smetterebbe di valere senza avvisare.
 
 ```bash
 sudo ufw allow from 172.16.0.0/12 to any port <porta> proto tcp
@@ -336,7 +334,7 @@ grep -rn 'prune' /etc/cron* /usr/local/bin 2>/dev/null
 
 **Perché.**
 
-- `docker system prune -a` toglie anche le immagini con un tag non usate in quel momento: gli
+- `docker system prune -a` toglie anche le immagini con un tag non usate in quel momento, come gli
   aggiornamenti scaricati e le immagini tenute per tornare indietro
 - `--volumes` può cancellare volumi con dei dati dentro
 - le stime di spazio recuperabile (`docker system df`, la colonna `SIZE` di `docker images`)
@@ -364,9 +362,9 @@ grep -n "device_id" automations.yaml scripts.yaml
 Interessano le righe sotto `target:`. Quelle nei trigger sono un'altra cosa.
 
 **Perché.** Un'azione con destinatario `device_id` cerca le entità di quel dispositivo. Se non
-ne trova più, per esempio dopo un aggiornamento o un'integrazione rimossa e riaggiunta, non
-fallisce: non fa niente e non scrive niente nel log. È quello che è successo a me dopo
-l'aggiornamento della voce 5: per due giorni nessuna notifica, e me ne sono accorto solo perché
+ne trova più, per esempio dopo un aggiornamento o un'integrazione rimossa e riaggiunta, non dà
+errore e non scrive niente nel log. È quello che è successo a me dopo l'aggiornamento della
+voce 5. Per due giorni nessuna notifica, e me ne sono accorto solo perché
 ne aspettavo una che non è arrivata.
 
 **Correggi.** Usa `entity_id` (per esempio `notify.<nome>`), che non cambia. Poi esegui
@@ -389,12 +387,11 @@ Can't parse entities: can't find end of the entity starting at byte offset N
 ma sul telefono non arriva niente. Le notifiche che contengono solo numeri e indirizzi IP sono
 al sicuro, finché il dato non cambia forma.
 
-C'è un secondo effetto, che sorprende proprio chi conosce il primo: il testo semplice non
-toglie l'anteprima dei link. Telegram riconosce comunque gli indirizzi, e un nome come
+Il testo semplice però non toglie l'anteprima dei link. Telegram riconosce comunque gli indirizzi, e un nome come
 `ghcr.io/...` diventa una scheda di GitHub più alta del messaggio.
 
-**Correggi.** Per i messaggi con dati esterni, l'azione dell'integrazione Telegram, che accetta
-entrambe le opzioni:
+**Correggi.** Per i messaggi con dati esterni si usa l'azione dell'integrazione Telegram, che
+accetta entrambe le opzioni:
 
 ```yaml
 - action: telegram_bot.send_message
@@ -422,16 +419,16 @@ non sta funzionando.
 
 **Perché.**
 
-- Un `entity_globs` che non corrisponde a nessuna entità non dà nessun errore: sembra
-  funzionare e può restare sbagliato per mesi. Attenzione ai nomi simili: le entità di
-  `monitor_docker` finiscono in `_memory_percent`, non in `_memory_percentage`
-- `purge_keep_days` vale per tutto il database: non distingue la temperatura di una stanza,
+- Un `entity_globs` che non corrisponde a nessuna entità non dà nessun errore, quindi
+  sembra funzionare e può restare sbagliato per mesi. Attenzione ai nomi simili, come le entità
+  di `monitor_docker` che finiscono in `_memory_percent`, non in `_memory_percentage`
+- `purge_keep_days` vale per tutto il database e non distingue la temperatura di una stanza,
   che vale la pena tenere una settimana, da un sensore che scrive ogni pochi secondi per un
   grafico di un quarto d'ora
-- cancellare righe non rimpicciolisce il file: SQLite riusa lo spazio liberato, ma non lo
-  restituisce al disco
-- `hours_to_show` di un grafico non c'entra niente con quanto conserva il database: sono due
-  impostazioni indipendenti
+- cancellare righe non rimpicciolisce il file, perché SQLite riusa lo spazio liberato senza
+  restituirlo al disco
+- `hours_to_show` di un grafico e la durata di conservazione del database sono due impostazioni
+  indipendenti
 
 **Correggi.** Un'automazione notturna che pota solo i sensori rumorosi:
 
@@ -453,15 +450,15 @@ non sta funzionando.
 I glob, invece dei singoli `entity_id`, fanno rientrare da soli i container che aggiungerai.
 Le statistiche a lungo termine (media, minimo e massimo orari) non vengono toccate. Gira prima
 del backup notturno, che così non si porta dietro righe destinate a sparire. Per recuperare
-spazio sul disco serve, una tantum, `recorder.purge` con `repack: true`: è lento e rallenta
+spazio sul disco serve, una tantum, `recorder.purge` con `repack: true`, che è lento e rallenta
 Home Assistant mentre lavora.
 
 ### 17. Gli avvisi arrivano in coppia, e li hai provati provocando il guasto
 
-**Controlla.** Per ogni automazione di avviso: l'hai mai vista scattare? E l'avviso di
+**Controlla.** Per ogni automazione di avviso, l'hai mai vista scattare? E l'avviso di
 ripristino può arrivare senza che sia arrivato prima quello di guasto?
 
-**Perché.** Due storie.
+**Perché.**
 
 - A ottobre 2026 il Bluetooth di Home Assistant si è bloccato e tutti i sensori SwitchBot sono
   diventati non disponibili. È durato tre giorni prima che qualcuno se ne accorgesse. Nel log
@@ -500,15 +497,15 @@ non ne produce nessuna:
   mode: single
 ```
 
-Poi provoca il guasto e aspetta la notifica: un avviso mai visto scattare non è un avviso. Per
-il Bluetooth la prova giusta è `sudo rfkill block bluetooth` (e poi `unblock`, perché il
-blocco sopravvive al riavvio). `systemctl stop bluetooth` non va bene: Home Assistant lo
-risveglia da solo in un paio di minuti.
+Poi provoca il guasto e aspetta la notifica, perché finché non l'hai vista scattare non sai se
+funziona. Per il Bluetooth la prova giusta è `sudo rfkill block bluetooth` (e poi `unblock`,
+perché il blocco sopravvive al riavvio). `systemctl stop bluetooth` non va bene, perché Home
+Assistant lo risveglia da solo in un paio di minuti.
 
 Se il Bluetooth si blocca davvero, `bluetoothctl power off` e `on` non bastano, anche se è
-quello che suggerisce il log: serve `sudo systemctl restart bluetooth`, e Home Assistant
-riprende da solo entro un minuto. Io ho scelto di farmi avvisare e non di riavviarlo in
-automatico: un ripristino automatico nasconderebbe il guasto, e richiederebbe di dare a Home
+quello che suggerisce il log. Serve `sudo systemctl restart bluetooth`, e Home Assistant
+riprende da solo entro un minuto. Ho scelto di farmi avvisare invece di riavviarlo in
+automatico, perché un ripristino automatico nasconderebbe il guasto e richiederebbe di dare a Home
 Assistant i permessi di amministratore sul Pi.
 
 ## Sistema e backup
@@ -522,14 +519,13 @@ lsusb -t | grep -i 'Driver=uas'
 sudo journalctl -k | grep -i 'uas_eh'
 ```
 
-Il `sudo` serve: senza, `journalctl` risponde `-- No entries --` anche quando le voci ci sono,
-perché l'utente normale vede solo il proprio journal. Un "nessuna voce" senza `sudo` non dice
-niente.
+Senza `sudo`, `journalctl` risponde `-- No entries --` anche quando le voci ci sono, perché
+l'utente normale vede solo il proprio journal.
 
 **Perché.** Molti adattatori USB per SSD usano il protocollo UAS. Quando un comando al disco va
 in timeout, il kernel annulla tutto e resetta il dispositivo, e per circa 30 secondi l'intero Pi
 resta fermo ad aspettare il disco. I servizi non cadono, ma quelli con un timeout interno
-possono uscirne in uno stato incoerente: il blocco del Bluetooth della voce 17 è cominciato
+possono uscirne in uno stato incoerente. Il blocco del Bluetooth della voce 17 è cominciato
 proprio con uno di questi reset. Il mio adattatore ha un chip ASMedia (`174c:55aa` in `lsusb`),
 molto diffuso.
 
@@ -540,10 +536,10 @@ molto diffuso.
 usb-storage.quirks=<vendor>:<product>:u
 ```
 
-con i due codici letti da `lsusb`. Il disco diventa un po' più lento. Attenzione: un errore in
+con i due codici letti da `lsusb`. Il disco diventa un po' più lento. Un errore in
 quel file impedisce al Pi di avviarsi, e se il Pi fa da DNS la casa resta senza internet. Prima
 fai una copia del file e tieni a portata di mano un modo per correggerlo da un altro computer.
-Io non l'ho applicato, per ora: ho avuto un solo episodio, e tengo il conto dei reset con lo
+Per ora non l'ho applicato, perché ho avuto un solo episodio, e tengo il conto dei reset con lo
 [script diagnostico](diagnostica.md).
 
 ### 19. Se il Pi si blocca, riparte da solo, e tu lo sai
@@ -559,7 +555,7 @@ E poi: se stanotte il Pi si fosse riavviato da solo, lo sapresti?
 **Perché.** A ottobre 2026 il Pi si è bloccato di notte. Il journal si interrompe su una riga
 normale, senza errori e senza la sequenza di spegnimento; il watchdog hardware l'ha fatto
 ripartire dopo un minuto. L'ho scoperto solo per una notifica strana arrivata al riavvio. La
-causa del blocco non si può ricostruire: con il sistema fermo non è stato scritto niente.
+causa del blocco non si può ricostruire, perché con il sistema fermo non è stato scritto niente.
 Senza watchdog un Pi bloccato resta bloccato finché qualcuno non stacca la spina, e con lui il
 DNS di casa.
 
@@ -570,7 +566,7 @@ DNS di casa.
 RuntimeWatchdogSec=1min
 ```
 
-Vale dal riavvio successivo. Io ho un minuto; dopo il riavvio controlla nel journal
+Vale dal riavvio successivo. Io ho messo un minuto. Dopo il riavvio controlla nel journal
 (`sudo journalctl -b | grep -i watchdog`) che il valore sia stato accettato dall'hardware.
 
 Per l'avviso, Home Assistant legge da quanto tempo è acceso il Pi. Nel container `/proc/uptime`
@@ -608,8 +604,8 @@ da meno di mezz'ora. Così un riavvio del solo Home Assistant non produce nessun
         message: "Il Pi si è riavviato da {{ states('sensor.uptime_raspberry') | int // 60 }} minuti"
 ```
 
-Non usare per questo l'ora dell'ultimo avvio di System Monitor: su un Pi senza orologio con la
-batteria viene calcolata al boot, con l'ora ancora sbagliata, e non viene più corretta.
+Non usare per questo l'ora dell'ultimo avvio di System Monitor, che su un Pi senza orologio con
+la batteria viene calcolata al boot, con l'ora ancora sbagliata, e non viene più corretta.
 
 ### 20. I backup esistono, sono recenti, stanno su un altro disco, e ne hai ripristinato uno
 
@@ -626,37 +622,38 @@ Per trovarli conviene cercare i file per nome, non le pianificazioni:
 sudo find / -xdev -iname '*backup*' -mtime -3 2>/dev/null
 ```
 
-**Perché.** Tre storie.
+**Perché.**
 
 - Avevo concluso di non avere nessun backup, cercando nei cron e nei timer di systemd. Invece
   Immich fa da solo il dump del proprio database ogni notte, con una funzione interna che né
   cron né systemd vedono
-- Home Assistant aveva un solo backup, vecchio di cinque mesi: quello creato dalla procedura
+- Home Assistant aveva un solo backup, vecchio di cinque mesi, quello creato dalla procedura
   iniziale. I backup automatici non erano mai stati pianificati. Il pannello lo diceva, ma
   nessuno lo guardava
 - Foto, dump del database di Immich e backup di Home Assistant stanno tutti sullo stesso SSD.
-  Proteggono da un errore o da un database corrotto, non dalla morte del disco. Io questa copia
-  fuori dal disco non ce l'ho ancora: è il punto aperto più importante del mio homelab
+  Proteggono da un errore o da un database corrotto, ma se muore il disco si perde tutto. La
+  copia su un altro disco non ce l'ho ancora, ed è il punto aperto più importante del mio
+  homelab
 
 **Correggi.**
 
 - **Home Assistant**: Settings > System > Backups, in fondo alla pagina "Configure backup
-  settings": giornaliero, ultime tre copie. La chiave di cifratura senza cui i backup non si
+  settings", con backup giornaliero e le ultime tre copie. La chiave di cifratura senza cui i backup non si
   ripristinano va tenuta fuori dal Pi (io ne ho anche una copia su carta)
 - **Immich**: il backup del database si attiva nelle impostazioni di amministrazione, e i dump
   finiscono nella cartella `backups/` dentro quella delle foto. Io ne ho ripristinato uno su un
-  database usa e getta e confrontato i conteggi con quello vero: la procedura è nella pagina su
+  database usa e getta e confrontato i conteggi con quello vero. La procedura è nella pagina su
   [Immich](immich.md)
 - **Copia su un disco esterno**: in `/etc/fstab` montato per UUID e con l'opzione `nofail`, così
   un disco scollegato non blocca l'avvio del Pi. Lo script di copia deve controllare che il
-  disco sia montato davvero (`mountpoint -q <cartella>`) e fermarsi con un errore se non lo è:
-  altrimenti scrive nella cartella vuota sul disco di sistema e lo riempie senza dire niente
+  disco sia montato davvero (`mountpoint -q <cartella>`) e fermarsi con un errore se non lo è.
+  Altrimenti scrive nella cartella vuota sul disco di sistema e lo riempie senza dire niente
 - **Controllo automatico dell'età**: lo fa lo [script diagnostico](diagnostica.md), che avvisa
   se l'ultimo backup è troppo vecchio
 
 ## Se ne fai solo tre
 
-- la **20**, perché un backup mai provato è solo una speranza
-- la **17**, perché un avviso mai visto scattare è solo una speranza anche lui
+- la **20**, perché senza un backup provato un guasto del disco porta via tutto
+- la **17**, perché un avviso mai visto scattare può non funzionare proprio quando serve
 - la **1**, se sul Pi gira Unbound: è l'unica che può lasciare tutta la casa senza internet a
   ogni riavvio dopo qualche giorno di Pi spento

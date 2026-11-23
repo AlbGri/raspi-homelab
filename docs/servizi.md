@@ -8,10 +8,11 @@ gruppi: quelli sempre accesi e quelli che accendo solo quando servono.
 
 Il limite vero è la memoria. Il Pi ha 3,7 GB di RAM, e i servizi sempre accesi ne usano circa
 1,3. Con i soli servizi sempre accesi il sistema usa già un po' di swap (1,1 GB a ottobre 2026),
-la memoria d'appoggio sul disco: più lenta, ma evita che qualcosa si fermi per mancanza di spazio. Per questo il resto
-si accende su richiesta (vedi [Decisioni](decisioni.md)).
+cioè memoria d'appoggio sul disco, più lenta della RAM ma utile a non far fermare niente per
+mancanza di spazio. Per questo il resto si accende su richiesta (vedi [Decisioni](decisioni.md)).
 
-I valori di memoria qui sotto sono di ottobre 2026: cambiano di giorno in giorno, servono a dare l'ordine di grandezza.
+I valori di memoria qui sotto sono di ottobre 2026. Cambiano di giorno in giorno e servono solo
+a dare l'ordine di grandezza.
 
 ## Sempre accesi
 
@@ -21,10 +22,10 @@ I valori di memoria qui sotto sono di ottobre 2026: cambiano di giorno in giorno
 | Pi-hole | Blocca pubblicità e tracciamento per tutti i dispositivi di casa | 123 MB |
 | Unbound | Trova gli indirizzi dei siti andando direttamente alla fonte | 19 MB |
 | **Casa** | | |
-| Home Assistant | Il centro della casa: sensori, automazioni, notifiche, la dashboard da cui gestisco tutto | 504 MB |
+| Home Assistant | Sensori, automazioni, notifiche e la dashboard da cui gestisco tutto | 504 MB |
 | go2rtc | Porta il video della camera a Home Assistant | 13 MB |
 | **Foto** | | |
-| Immich (server) | L'alternativa a Google Foto: backup dal telefono, album, ricerca | 331 MB |
+| Immich (server) | Backup delle foto dal telefono, album e ricerca, al posto di Google Foto | 331 MB |
 | Immich (database) | Dove Immich tiene l'elenco delle foto e tutto ciò che sa di loro | 125 MB |
 | Immich (cache) | Memoria veloce per i lavori in coda | 13 MB |
 | Immich (riconoscimento) | Riconosce volti e oggetti, e permette di cercare "spiaggia" o "cane" | 134 MB |
@@ -43,7 +44,7 @@ sua](immich.md).
 
 | Servizio | A cosa serve |
 |---|---|
-| Jellyfin | Un Netflix di casa: guarda film e serie salvati sul Pi, dalla TV, dal telefono o dal PC |
+| Jellyfin | Film e serie salvati sul Pi, da guardare sulla TV, sul telefono o sul PC |
 | Gruppo film e serie | I programmi che tengono in ordine la libreria che Jellyfin mostra. Partono e si fermano insieme, con un solo tasto |
 | Dozzle | Mostra in una pagina web i registri di tutti i container, utile quando qualcosa non va |
 

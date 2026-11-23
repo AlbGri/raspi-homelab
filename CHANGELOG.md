@@ -2,6 +2,9 @@
 
 ## Novembre 2026
 
+Testi riletti in tutte le pagine: frasi più piane, meno formule ripetute, e il percorso di una
+richiesta DNS come elenco numerato invece che come schema.
+
 La pagina sul DNS dice anche cosa Pi-hole non blocca (gli spot di YouTube, i dispositivi con un
 DNS loro) e cosa chiede in cambio, con l'elenco delle liste di blocco che uso. La pagina
 iniziale parla di meno pubblicità e telemetria, invece di promettere niente pubblicità.

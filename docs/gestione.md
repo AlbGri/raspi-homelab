@@ -13,15 +13,15 @@ I comandi qui sotto si lanciano dalla cartella del compose, che chiamo `~/docker
 
 ## Prima di cominciare
 
-Si cancellano le copie di riserva della sessione precedente: è passato un mese, e se qualcosa
-non andava ce ne saremmo accorti.
+Si cancellano le copie di riserva della sessione precedente, perché in un mese un problema si
+sarebbe già visto.
 
 ```bash
 docker images --format '{{.Repository}}:{{.Tag}}' | grep ':rollback$' | xargs -r docker rmi
 ```
 
 La pulizia mensile automatica delle immagini ([voce 13](controlla.md) di Controlla) non le
-tocca: cancella solo le immagini senza nome, e queste un nome ce l'hanno. Senza questo passo
+tocca, perché cancella solo le immagini senza nome. Senza questo passo
 resterebbero sul disco per sempre.
 
 ## Lo schema per ogni servizio
@@ -32,7 +32,7 @@ L'esempio è Pi-hole, ma vale per tutti. Si comincia sempre dalla cartella giust
 cd ~/docker
 ```
 
-Il `cd` va ripetuto anche a metà sessione: se la connessione SSH cade, si riparte dalla cartella
+Il `cd` va ripetuto anche a metà sessione. Se la connessione SSH cade si riparte dalla cartella
 di casa, e un `docker compose` lanciato da lì non trova il file `.env` con le variabili. Il
 segnale è una raffica di avvisi come questo:
 
@@ -40,7 +40,7 @@ segnale è una raffica di avvisi come questo:
 WARN[0000] The "PIHOLE_PASSWORD" variable is not set. Defaulting to a blank string.
 ```
 
-Se compare, **fermarsi**: il servizio verrebbe ricreato con le variabili vuote.
+Se compare, **fermarsi**, perché il servizio verrebbe ricreato con le variabili vuote.
 
 1. **Mettere da parte l'immagine in uso**, dandole un nome con `:rollback`:
 
@@ -55,7 +55,7 @@ Se compare, **fermarsi**: il servizio verrebbe ricreato con le variabili vuote.
    ```
 
 3. **Verificare** che il container sia acceso e sano, **e** che il servizio faccia ancora il
-   suo lavoro: la tabella più sotto dice come, servizio per servizio. Un container `healthy`
+   suo lavoro, con le verifiche della tabella più sotto. Un container `healthy`
    che non fa più quello che deve è il guasto più difficile da vedere.
 
 4. **Se non va, tornare indietro:** si rimette il vecchio nome sull'immagine di riserva, e il
@@ -70,8 +70,7 @@ Se compare, **fermarsi**: il servizio verrebbe ricreato con le variabili vuote.
 
 ## Ordine e verifiche
 
-Dal servizio meno delicato al più delicato: se qualcosa si rompe, si rompe un pezzo alla volta,
-e i primi errori costano poco. Unbound viene prima di Pi-hole perché Pi-hole dipende da lui.
+L'ordine va dal servizio meno delicato al più delicato, così i primi errori costano poco. Unbound viene prima di Pi-hole perché Pi-hole dipende da lui.
 
 | # | Servizio | Come verificare |
 |---|---|---|
@@ -87,16 +86,16 @@ Due note:
 - **DuckDNS**: se scrive il registro su file (opzione `LOG_FILE=true`), il registro del
   container resta vuoto, e `docker logs duckdns` non dice niente. Si legge il file:
   `tail -3 ~/docker/data/duckdns/duck.log`
-- **Redis di Immich** sta nel compose di Immich, in una sottocartella: lì ogni `docker compose`
+- **Redis di Immich** sta nel compose di Immich, in una sottocartella, e lì ogni `docker compose`
   vuole anche `--env-file ../.env`, per leggere le variabili del compose principale
 
 Mentre Pi-hole si riavvia, la casa resta senza DNS per qualche secondo. Se non ripartisse,
-l'unica via d'uscita è impostare a mano un DNS sul PC da cui si lavora: la
-[voce 2](controlla.md) di Controlla spiega perché il router non fa da riserva.
+l'unica via d'uscita è impostare a mano un DNS sul PC da cui si lavora.
+Perché il router non faccia da riserva è spiegato nella [voce 2](controlla.md) di Controlla.
 
 ## Home Assistant
 
-È l'ultimo perché è il più delicato: cambia ogni mese, e ogni versione può modificare il
+È l'ultimo perché è il più delicato. Esce una versione al mese, e ognuna può modificare il
 comportamento di un'integrazione.
 
 **Prima**
@@ -106,9 +105,9 @@ comportamento di un'integrazione.
 - Controllare che il backup della notte esista ([voce 20](controlla.md))
 - Annotare gli errori che il registro mostra già adesso, per confrontarli dopo
 
-Il backup non è un controllo di routine. Se la versione nuova ha già convertito il database,
-rimettere la vecchia con `:rollback` può non bastare: la vecchia non sa leggere il formato
-nuovo. In quel caso si torna indietro solo dal backup.
+Qui il backup conta davvero. Se la versione nuova ha già convertito il database, rimettere la
+vecchia con `:rollback` può non bastare, perché la vecchia non sa leggere il formato nuovo, e
+allora si torna indietro solo dal backup.
 
 **Durante**
 
@@ -127,15 +126,15 @@ convertire il database. Non riavviarlo mentre lavora.
   {{ integration_entities('<integrazione>') | select('is_state', 'unavailable') | list | count }}
   ```
 
-- I componenti installati da HACS funzionano ancora: non sono ufficiali, e sono i primi a
+- I componenti installati da HACS funzionano ancora. Non sono ufficiali e sono i primi a
   rompersi quando Home Assistant cambia qualcosa
 
 ## Cosa resta fuori dalla sessione
 
 - **Immich** ha la versione fissata nel `.env`. Diun sorveglia quindi un'etichetta che non
-  cambia mai e non segnala mai una versione nuova. Si aggiorna a parte, leggendo le note di
-  rilascio: è spiegato nella pagina su [Immich](immich.md)
-- **WireGuard** (wg-easy) è fissato alla versione principale 14: Diun segnala solo le
+  cambia mai e non segnala mai una versione nuova. Si aggiorna a parte, come spiegato nella
+  pagina su [Immich](immich.md)
+- **WireGuard** (wg-easy) è fissato alla versione principale 14, quindi Diun segnala solo le
   correzioni di quella linea, e il passaggio alla 15 si decide a parte
-- **I servizi spenti** non li sorveglia Diun, che guarda solo i container accesi: si aggiornano
+- **I servizi spenti** non li sorveglia Diun, che guarda solo i container accesi, e si aggiornano
   quando li accendo

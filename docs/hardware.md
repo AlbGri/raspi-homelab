@@ -6,8 +6,7 @@ Un Raspberry Pi 4B da 4 GB, dentro un case che contiene anche un SSD da 2 TB, al
 piccolo gruppo di continuità. Comprati in tre momenti diversi, per una spesa totale di circa
 320 €.
 
-Il consumo è fra 5 e 10 W, stimati, non misurati. Acceso tutto
-l'anno fa circa 45-90 kWh, cioè 10-25 € di corrente a 0,25-0,30 € al kWh.
+Il consumo stimato, che non ho misurato, è fra 5 e 10 W. Acceso tutto l'anno fa circa 45-90 kWh, cioè 10-25 € di corrente a 0,25-0,30 € al kWh.
 
 ## I pezzi
 
@@ -30,7 +29,7 @@ nessuna scheda SD.
 ## Il case DeskPi Pro
 
 Dentro il case stanno il Pi e l'SSD, collegato a una porta USB 3 del Pi da un piccolo ponte
-esterno. C'è anche una ventola, governata da una schedina che il Pi vede come una porta seriale:
+esterno. C'è anche una ventola, governata da una schedina che il Pi vede come la porta seriale
 `/dev/ttyUSB0` (un convertitore CH340).
 
 La velocità la scelgo a mano da un menu di Home Assistant con cinque livelli, da spenta al 100%.
@@ -42,7 +41,7 @@ vcgencmd measure_temp
 vcgencmd get_throttled   # 0x0 = nessun rallentamento, né adesso né dall'accensione
 ```
 
-**Un'avvertenza.** La porta seriale è montata nel container di Home Assistant, perché è lì che
+La porta seriale è montata nel container di Home Assistant, perché è lì che
 gira lo script. Se la schedina si stacca, il dispositivo sparisce e Home Assistant non si può più
 ricreare finché la riga resta nel compose.
 
@@ -59,17 +58,17 @@ trentina di secondi il Pi resta fermo sul disco. Come accorgersene e cosa si pu�
 
 ## Il gruppo di continuità
 
-È un mini UPS che lavora in corrente continua: sta fra l'alimentatore e il Pi e, se manca la
+È un mini UPS in corrente continua. Sta fra l'alimentatore e il Pi e, se manca la
 corrente, continua ad alimentarlo dalla sua batteria. Tolta la spina, il Pi resta acceso senza
 accorgersene. L'autonomia non l'ho ancora misurata.
 
-Il vantaggio non è solo restare accesi. Uno spegnimento brusco può lasciare un database a metà
+Protegge anche i dati. Uno spegnimento brusco può lasciare un database a metà
 di una scrittura, e un disco che si spegne mentre scrive è uno dei modi più comuni di
 rovinare un sistema.
 
-C'è anche una conseguenza pratica. Da quando c'è l'UPS, un riavvio inatteso **non** va attribuito
-per prima cosa a un calo di corrente. A ottobre 2026 il Pi si è bloccato, ed è stato il watchdog
-a riavviarlo: un meccanismo che riavvia il Pi se il sistema smette di rispondere. Come attivarlo,
+Con l'UPS, un riavvio inatteso non va attribuito per prima cosa a un calo di corrente. A ottobre
+2026 il Pi si è bloccato, ed è stato il watchdog a riavviarlo, il meccanismo che riavvia il Pi
+quando il sistema smette di rispondere. Come attivarlo,
 e come farsi avvisare quando succede, è nella [voce 19](controlla.md).
 
 ## Bluetooth
@@ -84,6 +83,6 @@ I sensori Bluetooth arrivano a Home Assistant dal dongle USB. Ogni tanto la rice
 dispositivi si blocca, e tutti i sensori smettono di aggiornarsi insieme. Come accorgersene e
 come rimediare è nella [voce 17](controlla.md).
 
-Ho pensato di cambiare il dongle e per ora non l'ho fatto: dei due blocchi avuti, l'ultimo è
-partito da un reset del disco, non dal dongle. Lo cambierò se un blocco arriverà senza un reset
+Ho pensato di cambiare il dongle, ma per ora non l'ho fatto: l'ultimo dei due blocchi è partito
+da un reset del disco. Lo cambierò se un blocco arriverà senza un reset
 del disco poco prima.

@@ -1,10 +1,10 @@
 # Decisioni
 
-Perché le cose sono come sono. Tengo un registro delle scelte con il loro motivo per non
-riaprire da capo discussioni già chiuse: dopo qualche mese il motivo non lo ricorda nessuno, e
-la tentazione di cambiare torna. Lo consiglio anche a te, anche solo come file di testo.
+Tengo un registro delle scelte con il loro motivo, perché dopo qualche mese il motivo non lo
+ricorda nessuno e torna la tentazione di riaprire discussioni già chiuse. Lo consiglio anche a
+te: basta un file di testo.
 
-Per ogni scelta: cosa ho scartato e perché. Le scelte nate da un guasto (ora del Pi, controlli
+Per ogni scelta c'è cosa ho scartato e perché. Le scelte nate da un guasto (ora del Pi, controlli
 di salute del DNS, log di Docker, notifiche, firewall, database di Home Assistant) sono spiegate
 in [Controlla il tuo homelab](controlla.md), insieme al guasto che le ha fatte nascere.
 
@@ -14,9 +14,9 @@ in [Controlla il tuo homelab](controlla.md), insieme al guasto che le ha fatte n
 
 **Scartato:** Pi-hole che inoltra le richieste a un DNS pubblico (Cloudflare, Quad9 e simili).
 
-**Perché:** per non dipendere da un servizio esterno: Unbound interroga direttamente i server
-radice e quelli di ogni dominio. Il prezzo è un componente in più, con le sue trappole: la [voce
-1](controlla.md) e la [voce 8](controlla.md) di Controlla vengono da lì.
+**Perché:** per non dipendere da un servizio esterno. Unbound interroga direttamente i server
+radice e quelli di ogni dominio. Unbound però è un componente in più, con le sue trappole, da cui
+vengono la [voce 1](controlla.md) e la [voce 8](controlla.md) di Controlla.
 
 ### Niente intelligenza artificiale locale sul Pi
 
@@ -30,10 +30,10 @@ riconoscimento di volti e oggetti di Immich basta, e sul Pi funziona.
 **Scartato:** WAQI, e Open-Meteo.
 
 **Perché:** le centraline WAQI della mia zona erano ferme da mesi senza che il servizio lo
-dicesse. Open-Meteo risponde sempre, ma è un modello calcolato su una griglia di circa 11 km,
-non una misura. Volevo misure vere: OpenAQ pubblica quelle delle centraline dell'agenzia
-regionale per l'ambiente. Controlla sempre la data dell'ultima misura, non solo che il dato
-arrivi.
+dicesse. Open-Meteo risponde sempre, ma i suoi valori vengono da un modello calcolato su
+una griglia di circa 11 km. Volevo misure vere, e OpenAQ pubblica quelle delle centraline
+dell'agenzia regionale per l'ambiente. Di qualunque fonte conviene controllare la data
+dell'ultima misura, perché un dato che arriva può essere vecchio di mesi.
 
 ## Come organizzarlo
 
@@ -42,11 +42,11 @@ arrivi.
 **Scartato:** tenere tutto acceso sempre.
 
 **Perché:** la RAM del Pi è poca, e alcuni servizi la usano solo quando li guardi. Dalla
-dashboard di Home Assistant accendo e spengo un gruppo intero con un solo tasto: tutto quello
-che serve per film e serie parte e si ferma insieme.
+dashboard di Home Assistant accendo e spengo un gruppo intero con un solo tasto, e tutto
+quello che serve per film e serie parte e si ferma insieme.
 
-Una sola cosa non si spegne mai: il proxy che dà a Home Assistant la lettura dello stato di
-Docker. Senza, Home Assistant non sa più quali container sono accesi, e gli interruttori smettono
+Il proxy che dà a Home Assistant la lettura dello stato di Docker, invece, non si spegne mai.
+Senza, Home Assistant non sa più quali container sono accesi, e gli interruttori smettono
 di funzionare.
 
 ### Immich in un compose separato
@@ -80,12 +80,12 @@ computer più potente mi è servito una volta sola, per l'import iniziale di tut
 **Scartato:** una rete bridge per ogni servizio, con le porte pubblicate una per una.
 
 **Perché:** in rete host ogni servizio si raggiunge sull'indirizzo del Pi senza configurare
-niente, e Home Assistant vede i dispositivi di casa. Il prezzo:
+niente, e Home Assistant vede i dispositivi di casa. I costi sono tre:
 
-- **le porte si scontrano**: Pi-hole occupa la 8080, quindi un altro servizio che la voleva
-  sta sulla 8085
-- **tutti i container hanno lo stesso indirizzo** verso Pi-hole ([voce 4](controlla.md))
-- **ogni porta è aperta su tutte le interfacce** ([voce 11](controlla.md))
+- le porte si scontrano, e un servizio deve spostarsi se la sua porta è già presa (la 8080 la
+  occupa Pi-hole)
+- tutti i container hanno lo stesso indirizzo verso Pi-hole ([voce 4](controlla.md))
+- ogni porta è aperta su tutte le interfacce ([voce 11](controlla.md))
 
 Per questo Diun e Immich stanno in reti bridge. Il database e la cache di Immich stanno in una
 rete interna, senza accesso a internet: solo il server e il machine learning escono, per
@@ -98,8 +98,8 @@ scaricare mappe e modelli.
 
 **Perché:** dati e configurazione restano separati, e i backup di Home Assistant non si
 gonfiano di video. La cartella dei media è già condivisa in rete, quindi le clip si guardano dal
-PC senza passare da Home Assistant. Mai in `/config/www`: quella cartella è servita **senza
-password**, e chiunque conosca l'indirizzo vedrebbe i video di casa.
+PC senza passare da Home Assistant. In `/config/www` mai, perché quella cartella è servita
+**senza password** e chiunque conosca l'indirizzo vedrebbe i video di casa.
 
 ## Come aggiornarlo
 
@@ -110,26 +110,26 @@ avviso.
 
 **Perché:**
 
-- **Diun al posto di Watchtower.** Diun non scarica niente: chiede ai registry se c'è una
+- **Diun al posto di Watchtower.** Diun non scarica niente, chiede ai registry se c'è una
   versione nuova e manda un avviso. Gli basta il permesso di leggere, e le versioni nuove non
   restano sul disco pronte a entrare di nascosto ([voce 5](controlla.md))
 - **Una sessione al mese, ma avvisi ogni giorno.** Gli avvisi arrivavano ogni due o tre giorni
-  e nessuno aggiornava. Il problema non era quanti avvisi arrivavano, ma l'assenza di
-  un'abitudine: ridurli a uno al mese avrebbe solo concentrato lo stesso rumore. Ora gli avvisi
+  e nessuno aggiornava. Mancava un'abitudine, e ridurli a uno al mese avrebbe solo
+  concentrato lo stesso rumore. Ora gli avvisi
   sono la lista della spesa della sessione mensile, che ha un ordine fisso e un modo di tornare
   indietro per ogni servizio (la procedura è in [Gestione](gestione.md))
 - **Via il pulsante "scarica aggiornamenti" dalla dashboard.** Scaricava le immagini di tutti i
-  servizi senza applicarle: con un tocco ricreava esattamente la situazione della voce 5
+  servizi senza applicarle, e con un tocco ricreava la situazione della voce 5
 
 ## Come documentarlo
 
-### I commenti dicono cosa è una cosa e perché, non com'era prima
+### I commenti dicono cos'è una cosa e perché
 
 **Scartato:** commenti e descrizioni che raccontano la storia ("prima usavamo X, poi...").
 
 **Perché:** chi legge un file di configurazione, me compreso fra un anno, non ha vissuto quella
-storia, e gli serve sapere perché le cose sono così oggi. La storia sta in un registro a parte:
-questo.
+storia, e gli serve sapere perché le cose sono così oggi. La storia sta in un registro a parte,
+che è questa pagina.
 
 ### Le azioni pericolose della dashboard si spiegano nel messaggio di conferma
 
