@@ -2,16 +2,11 @@
 
 ## In breve
 
-Molte voci di [Controlla il tuo homelab](controlla.md) si possono verificare da sole. Lo script
-[`controlla-homelab.sh`](../scripts/controlla-homelab.sh) lo fa in un colpo, e per ogni voce
-risponde `OK`, `ATTENZIONE` o `SALTATO`.
+Molte voci di [Controlla il tuo homelab](controlla.md) si possono verificare da sole. Lo script [`controlla-homelab.sh`](../scripts/controlla-homelab.sh) lo fa in un colpo, e per ogni voce risponde `OK`, `ATTENZIONE` o `SALTATO`.
 
-Non modifica niente e non copia file. L'output non contiene percorsi né configurazioni, quindi
-si può incollare dove serve, per esempio in una chat per chiedere aiuto.
+Non modifica niente e non copia file. L'output non contiene percorsi né configurazioni, quindi si può incollare dove serve, per esempio in una chat per chiedere aiuto.
 
-Ogni controllo è nato da un guasto rimasto invisibile per giorni o settimane, perché nessuno
-andava a guardare. Per non affidarmi alla memoria, lo lancio come primo passo della
-[sessione mensile](gestione.md).
+Ogni controllo è nato da un guasto rimasto invisibile per giorni o settimane, perché nessuno andava a guardare. Per non affidarmi alla memoria, lo lancio come primo passo della [sessione mensile](gestione.md).
 
 ## Come si lancia
 
@@ -23,8 +18,7 @@ less controlla-homelab.sh        # leggilo prima: si lancia con sudo
 sudo bash controlla-homelab.sh
 ```
 
-Senza `sudo` funziona lo stesso, ma salta i controlli che leggono il registro del kernel e i
-file di Home Assistant. Home Assistant e Immich li trova da solo, dal nome dell'immagine.
+Senza `sudo` funziona lo stesso, ma salta i controlli che leggono il registro del kernel e i file di Home Assistant. Home Assistant e Immich li trova da solo, dal nome dell'immagine.
 
 ## Cosa controlla
 
@@ -42,8 +36,7 @@ file di Home Assistant. Home Assistant e Immich li trova da solo, dal nome dell'
 | Watchdog attivo | [19](controlla.md) |
 | Età dei backup di Home Assistant e di Immich, e se stanno sullo stesso disco del sistema | [20](controlla.md) |
 
-Le altre voci non si possono verificare con uno script, perché dipendono dal router, da come
-sono scritte le notifiche o da una prova che va fatta a mano.
+Le altre voci non si possono verificare con uno script, perché dipendono dal router, da come sono scritte le notifiche o da una prova che va fatta a mano.
 
 ## Un esempio di risultato
 

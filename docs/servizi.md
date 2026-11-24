@@ -2,17 +2,11 @@
 
 ## In breve
 
-Sul Pi girano una ventina di servizi, ognuno nel suo container: un pacchetto che contiene il
-programma e tutto ciò che gli serve, separato dagli altri e dal sistema. Si dividono in due
-gruppi: quelli sempre accesi e quelli che accendo solo quando servono.
+Sul Pi girano una ventina di servizi, ognuno nel suo container: un pacchetto che contiene il programma e tutto ciò che gli serve, separato dagli altri e dal sistema. Si dividono in due gruppi: quelli sempre accesi e quelli che accendo solo quando servono.
 
-Il limite vero è la memoria. Il Pi ha 3,7 GB di RAM, e i servizi sempre accesi ne usano circa
-1,3. Con i soli servizi sempre accesi il sistema usa già un po' di swap (1,1 GB a ottobre 2026),
-cioè memoria d'appoggio sul disco, più lenta della RAM ma utile a non far fermare niente per
-mancanza di spazio. Per questo il resto si accende su richiesta (vedi [Decisioni](decisioni.md)).
+Il limite vero è la memoria. Il Pi ha 3,7 GB di RAM, e i servizi sempre accesi ne usano circa 1,3. Con i soli servizi sempre accesi il sistema usa già un po' di swap (1,1 GB a ottobre 2026), cioè memoria d'appoggio sul disco, più lenta della RAM ma utile a non far fermare niente per mancanza di spazio. Per questo il resto si accende su richiesta (vedi [Decisioni](decisioni.md)).
 
-I valori di memoria qui sotto sono di ottobre 2026. Cambiano di giorno in giorno e servono solo
-a dare l'ordine di grandezza.
+I valori di memoria qui sotto sono di ottobre 2026. Cambiano di giorno in giorno e servono solo a dare l'ordine di grandezza.
 
 ## Sempre accesi
 
@@ -37,8 +31,7 @@ a dare l'ordine di grandezza.
 | Diun | Controlla ogni giorno se ci sono versioni nuove dei servizi e mi avvisa | 10 MB |
 | Proxy di Docker | Dà a Home Assistant e a Diun il permesso di leggere lo stato dei container, e niente di più | 2 MB |
 
-Come funzionano Pi-hole e Unbound è nella pagina sul [DNS](dns.md); Immich ha una [pagina
-sua](immich.md).
+Come funzionano Pi-hole e Unbound è nella pagina sul [DNS](dns.md); Immich ha una [pagina sua](immich.md).
 
 ## Accesi su richiesta
 
